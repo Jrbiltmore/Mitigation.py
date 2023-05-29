@@ -1,0 +1,78 @@
+To create the data.csv file, you can use a text editor or spreadsheet software and save the file with a .csv extension. Here’s an example of what the data.csv file could look like:
+
+feature1,feature2,feature3,feature4,feature5,target
+0.1,0.5,0.8,0.2,0.3,0
+0.3,0.4,0.7,0.6,0.1,1
+0.2,0.6,0.9,0.4,0.2,0
+0.4,0.3,0.5,0.1,0.7,1
+0.8,0.2,0.6,0.3,0.5,0
+0.7,0.9,0.2,0.5,0.6,1
+
+In this example, the CSV file contains six columns: feature1, feature2, feature3, feature4, feature5, and target. The first five columns represent the input features, and the last column (target) represents the target variable. The target column contains binary labels (0 or 1) indicating whether an intrusion is present or not.
+
+Below is an expanded version of the intrusion_detection.py code with an enhanced scope for intrusion detection:
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, classification_report
+
+def load_dataset():
+    # Load the dataset from the CSV file
+    data = pd.read_csv('data.csv')
+    return data
+
+def preprocess_data(data):
+    # Prepare the data
+    X = data.drop('target', axis=1)  # Input features
+    y = data['target']  # Target variable
+    return X, y
+
+def train_classifier(X, y):
+    # Split the data into training and testing sets
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+    # Create and train the classifier
+    classifier = RandomForestClassifier()
+    classifier.fit(X_train, y_train)
+
+    return classifier, X_test, y_test
+
+def evaluate_classifier(classifier, X_test, y_test):
+    # Make predictions on the test set
+    predictions = classifier.predict(X_test)
+
+    # Calculate the accuracy of the classifier
+    accuracy = accuracy_score(y_test, predictions)
+    print("Accuracy:", accuracy)
+
+    # Generate classification report
+    report = classification_report(y_test, predictions)
+    print("Classification Report:\n", report)
+
+def detect_intrusion(classifier, input_data):
+    # Perform detection
+    prediction = classifier.predict([input_data])
+    return prediction[0]
+
+# Load the dataset
+data = load_dataset()
+
+# Preprocess the data
+X, y = preprocess_data(data)
+
+# Train the classifier
+classifier, X_test, y_test = train_classifier(X, y)
+
+# Evaluate the classifier
+evaluate_classifier(classifier, X_test, y_test)
+
+# Example usage for intrusion detection
+input_data = [0.2, 0.5, 0.8, 0.1, 0.3]  # Replace with actual input data
+prediction = detect_intrusion(classifier, input_data)
+print("Detection result:", prediction)
+
+In this expanded code:
+
+	•	The dataset is loaded using the load_dataset function, which reads the data.csv file and returns the loaded data.
+	•	The preprocess_data function prepares the data by
